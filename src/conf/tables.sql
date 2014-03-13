@@ -1,10 +1,16 @@
+drop table Transfer;
+drop table Account;
 drop table Person;
 drop table Postal;
-drop table Account;
-drop table Transfer;
-drop table CheckingAccount;
+
+
 
 ---------------
+create table Postal(
+code varchar(8) primary key,
+district varchar(80) not null);
+
+
 create table Person(
 cpr varchar(12) primary key,
 title varchar(40) not null,
@@ -13,14 +19,10 @@ lastName varchar(40) not null,
 street varchar(100) not null,
 phone int not null,
 email varchar(80),
-password varchar(80)
+password varchar(80),
 postal_code varchar(8) not null references Postal(code));
 
-create table Postal(
-code varchar(8) primary key,
-district varchar(80) not null);
 
--- FOREIGN KEYS!???????????
 -----------------
 
 create table Account(
