@@ -9,6 +9,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -18,15 +20,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- *
- * @author Mads
- */
 @Entity
 @Table(name = "PERSON")
+@Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries({
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")})
 public class Person implements Serializable {
+
     private static final Map<String, Person> items = new HashMap<>();
     private static final long serialVersionUID = 1L;
     @Id
@@ -75,10 +75,10 @@ public class Person implements Serializable {
     public Person() {
     }
 
-    public Person(String cpr) {
+    public Person(String cpr){
         this.cpr = cpr;
     }
-
+    
     public Person(String cpr, String title, String firstname, String lastname, String street, int phone) {
         this.cpr = cpr;
         this.title = title;
@@ -187,23 +187,9 @@ public class Person implements Serializable {
         }
         return true;
     }
-    
+
     public static Person find(String cpr) {
-    return items.get(cpr);
-    }
-    public void set(
-      String title,
-      String firstName,
-      String lastName,
-      String street,
-      String phone,
-      String email
-      ) {
-    this.firstname = firstName;
-    this.lastname = lastName;
-    this.street = street;
-    this.phone = Integer.parseInt(phone);
-    this.email = email;
+        return items.get(cpr);
     }
 
     @Override

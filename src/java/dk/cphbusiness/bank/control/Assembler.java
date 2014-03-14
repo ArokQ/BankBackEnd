@@ -12,20 +12,19 @@ import dk.cphbusiness.bank.model.Transfer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class Assembler {
 
     public static CustomerSummary createCustomerSummary(Person customer) {
-        return new CustomerSummary(customer.getCpr(), customer.getFirstname() + " " + customer.getLastname(), customer.getStreet(), null, customer.getEmail());
+        return new CustomerSummary(customer.getCpr(), customer.getFirstname(), customer.getStreet(), ""+customer.getPhone(), customer.getEmail());
     }
 
     public static Collection<CustomerSummary> createCustomerSummaries(Collection<Person> customers) {
         Collection<CustomerSummary> summaries = new ArrayList<>();
-        if (customers == null) {
-            return summaries;
-        }
+//        if (customers == null) {
+//            return summaries;
+//        }
         for (Person customer : customers) {
             summaries.add(createCustomerSummary(customer));
         }
@@ -95,14 +94,7 @@ public class Assembler {
           );
       }
     else {
-      person.set(
-          detail.getTitle(),
-          detail.getFirstName(),
-          detail.getLastName(),
-          detail.getStreet(),
-          detail.getPhone(),
-          detail.getEmail()
-          );
+      
       return person;
       }
     }
