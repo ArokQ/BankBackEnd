@@ -17,7 +17,7 @@ import java.util.List;
 public class Assembler {
 
     public static CustomerSummary createCustomerSummary(Person customer) {
-        return new CustomerSummary(customer.getCpr(), customer.getFirstname(), customer.getStreet(), ""+customer.getPhone(), customer.getEmail());
+        return new CustomerSummary(customer.getCpr(), customer.getFirstname()+" "+customer.getLastname(), customer.getStreet(), ""+customer.getPhone(), customer.getEmail());
     }
 
     public static Collection<CustomerSummary> createCustomerSummaries(Collection<Person> customers) {
@@ -32,7 +32,7 @@ public class Assembler {
     }
 
     public static AccountSummary createAccountSummary(Account account) {
-        return new AccountSummary(account.getAccountnumber().toString(), "Time Deposit Account", BigDecimal.valueOf(account.getBalance()));
+        return new AccountSummary(account.getAccountnumber().toString(), account.getAccounttype(), BigDecimal.valueOf(account.getBalance()));
     }
 
     

@@ -26,16 +26,17 @@ postal_code varchar(8) not null references Postal(code));
 -----------------
 
 create table Account(
-accountNumber int primary key,
+accountNumber varchar(10) primary key,
 balance float not null,
 interest float not null,
+accounttype varchar(30) not null,
 person_cpr varchar(12) not null references Person(cpr));
 
 create table Transfer(
 amount float primary key,
 transferDate date not null,
 targetAccount varchar(10) not null,
-account_accountNumber int not null references Account(accountNumber));
+account_accountNumber varchar(10) not null references Account(accountNumber));
 
 
 

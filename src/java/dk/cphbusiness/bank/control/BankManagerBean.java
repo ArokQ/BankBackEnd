@@ -13,6 +13,7 @@ import dk.cphbusiness.bank.contract.eto.NoSuchAccountException;
 import dk.cphbusiness.bank.contract.eto.NoSuchCustomerException;
 import dk.cphbusiness.bank.contract.eto.TransferNotAcceptedException;
 import static dk.cphbusiness.bank.control.Assembler.*;
+import dk.cphbusiness.bank.model.Account;
 import dk.cphbusiness.bank.model.Person;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -41,12 +42,16 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public Collection<AccountSummary> listAccounts() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query query = em.createNamedQuery("Account.findAll");
+        Collection<Account> account = query.getResultList();
+        return createAccountSummaries(account);
     }
 
     @Override
-    public Collection<AccountSummary> listCustomerAccounts(CustomerIdentifier customer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Collection<AccountSummary> listCustomerAccounts(CustomerIdentifier identifier) {
+        Person customer = Person.find(identifier.getCpr());
+        if (customer == null) return createAccountSummaries(null);
+        return createAccountSummaries(customer.getAccountCollection());
     }
 
     @Override

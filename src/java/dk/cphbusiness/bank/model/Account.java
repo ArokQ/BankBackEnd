@@ -2,6 +2,8 @@ package dk.cphbusiness.bank.model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -24,6 +27,15 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")})
 public class Account implements Serializable {
+    
+    private static final Map<String, Account> items = new HashMap<>();
+    
+    
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 30)
+    @Column(name = "ACCOUNTTYPE")
+    private String accounttype;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -46,6 +58,7 @@ public class Account implements Serializable {
 
     public Account() {
     }
+   
 
     public Account(Integer accountnumber) {
         this.accountnumber = accountnumber;
@@ -56,6 +69,10 @@ public class Account implements Serializable {
         this.balance = balance;
         this.interest = interest;
     }
+    
+    public static Collection<Account> list(){
+    return items.values();
+}
 
     public Integer getAccountnumber() {
         return accountnumber;
@@ -120,6 +137,14 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "dk.cphbusiness.bank.control.Account[ accountnumber=" + accountnumber + " ]";
+    }
+
+    public String getAccounttype() {
+        return accounttype;
+    }
+
+    public void setAccounttype(String accounttype) {
+        this.accounttype = accounttype;
     }
 
 }
