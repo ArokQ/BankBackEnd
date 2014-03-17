@@ -23,13 +23,13 @@ import javax.persistence.Query;
 
 @Stateless
 public class BankManagerBean implements BankManager {
-    
+    @PersistenceContext(unitName = "BackendPU")
     private EntityManager em;
     
     @Override
     public String sayHello(String name) {
-        Person person = new Person("010101-1001", "Awesome", "Niels", "Boer", "Vej 4", 24242525);
-        return " Hello "+name+ " from bank manager bean "+person.getCpr();
+        //Person person = new Person("010101-1001", "Awesome", "Niels", "Boer", "Vej 4", 24242525);
+        return " Hello "+name+ " from bank manager bean ";//+person.getCpr();
     }
     
     @Override
