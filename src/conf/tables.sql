@@ -1,3 +1,4 @@
+drop table Checking_Account;
 drop table Transfer;
 drop table Account;
 drop table Person;
@@ -26,18 +27,23 @@ postal_code varchar(8) not null references Postal(code));
 -----------------
 
 create table Account(
-accountNumber varchar(10) primary key,
-balance float not null,
+number varchar(10) primary key,
+dtype varchar(30) not null,
+--balance float not null,
 interest float not null,
-accounttype varchar(30) not null,
-person_cpr varchar(12) not null references Person(cpr));
+--accounttype varchar(30) not null,
+customer_cpr varchar(12) not null references Person(cpr));
 
 create table Transfer(
-amount float primary key,
+id int primary key,
+amount float not null,
 transferDate date not null,
-targetAccount varchar(10) not null,
-account_accountNumber varchar(10) not null references Account(accountNumber));
+source_number varchar(10) not null references Account(number),
+target_number varchar(10) not null references Account(number)
+);
 
-
+create table Checking_Account (
+    number varchar(10) primary key references Account(number)
+);
 
 ------------------

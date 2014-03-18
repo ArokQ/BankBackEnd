@@ -1,17 +1,18 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package dk.cphbusiness.bank.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -21,70 +22,81 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ *
+ * @author kenneth
+ */
 @Entity
 @Table(name = "PERSON")
-//@Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries({
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")})
 public class Person implements Serializable {
-
-    private static final Map<String, Person> items = new HashMap<>();
     private static final long serialVersionUID = 1L;
+
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 12)
     @Column(name = "CPR")
     private String cpr;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
     @Column(name = "TITLE")
     private String title;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
     @Column(name = "FIRSTNAME")
-    private String firstname;
+    private String firstName;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
     @Column(name = "LASTNAME")
-    private String lastname;
+    private String lastName;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "STREET")
     private String street;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "PHONE")
     private int phone;
+   
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 80)
     @Column(name = "EMAIL")
     private String email;
+    
     @Size(max = 80)
     @Column(name = "PASSWORD")
     private String password;
+    
     @JoinColumn(name = "POSTAL_CODE", referencedColumnName = "CODE")
     @ManyToOne(optional = false)
-    private Postal postalCode;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personCpr")
-    private Collection<Account> accountCollection = new ArrayList<>();
+    private Postal postal;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
+    private Collection<Account> ownedAccounts;
 
     public Person() {
     }
 
-    public Person(String cpr){
+    public Person(String cpr) {
         this.cpr = cpr;
     }
-    
+
     public Person(String cpr, String title, String firstname, String lastname, String street, int phone) {
         this.cpr = cpr;
         this.title = title;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstname;
+        this.lastName = lastname;
         this.street = street;
         this.phone = phone;
     }
@@ -105,20 +117,20 @@ public class Person implements Serializable {
         this.title = title;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getStreet() {
@@ -153,20 +165,20 @@ public class Person implements Serializable {
         this.password = password;
     }
 
-    public Postal getPostalCode() {
-        return postalCode;
+    public Postal getPostal() {
+        return postal;
     }
 
-    public void setPostalCode(Postal postalCode) {
-        this.postalCode = postalCode;
+    public void setPostal(Postal postal) {
+        this.postal = postal;
     }
 
-    public Collection<Account> getAccountCollection() {
-        return accountCollection;
+    public Collection<Account> getOwnedAccounts() {
+        return ownedAccounts;
     }
 
-    public void setAccountCollection(Collection<Account> accountCollection) {
-        this.accountCollection = accountCollection;
+    public void setOwnedAccounts(Collection<Account> ownedAccounts) {
+        this.ownedAccounts = ownedAccounts;
     }
 
     @Override
@@ -189,13 +201,9 @@ public class Person implements Serializable {
         return true;
     }
 
-    public static Person find(String cpr) {
-        return items.get(cpr);
-    }
-
     @Override
     public String toString() {
-        return "dk.cphbusiness.bank.control.Person[ cpr=" + cpr + " ]";
+        return "dk.cphbusiness.bank.model.Person[ cpr=" + cpr + " ]";
     }
-
+    
 }

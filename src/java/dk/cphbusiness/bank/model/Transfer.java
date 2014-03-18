@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package dk.cphbusiness.bank.model;
 
 import java.io.Serializable;
@@ -14,11 +20,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
- * @author Mads
+ * @author kenneth
  */
 @Entity
 @Table(name = "TRANSFER")
@@ -26,44 +31,58 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Transfer.findAll", query = "SELECT t FROM Transfer t")})
 public class Transfer implements Serializable {
     private static final long serialVersionUID = 1L;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    
     @Id
     @Basic(optional = false)
     @NotNull
+    @Column(name = "ID")
+    private Integer id;
+    
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "AMOUNT")
-    private Double amount;
+    private double amount;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "TRANSFERDATE")
     @Temporal(TemporalType.DATE)
     private Date transferdate;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "TARGETACCOUNT")
-    private String targetaccount;
-    @JoinColumn(name = "ACCOUNT_ACCOUNTNUMBER", referencedColumnName = "ACCOUNTNUMBER")
+    
+    @JoinColumn(name = "SOURCE_NUMBER", referencedColumnName = "NUMBER")
     @ManyToOne(optional = false)
-    private Account accountAccountnumber;
+    private Account sourceAccount;
+    
+    @JoinColumn(name = "TARGET_NUMBER", referencedColumnName = "NUMBER")
+    @ManyToOne(optional = false)
+    private Account targetAccount;
 
     public Transfer() {
     }
 
-    public Transfer(Double amount) {
-        this.amount = amount;
+    public Transfer(Integer id) {
+        this.id = id;
     }
 
-    public Transfer(Double amount, Date transferdate, String targetaccount) {
+    public Transfer(Integer id, double amount, Date transferdate) {
+        this.id = id;
         this.amount = amount;
         this.transferdate = transferdate;
-        this.targetaccount = targetaccount;
     }
 
-    public Double getAmount() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -75,26 +94,26 @@ public class Transfer implements Serializable {
         this.transferdate = transferdate;
     }
 
-    public String getTargetaccount() {
-        return targetaccount;
+    public Account getSourceAccount() {
+        return sourceAccount;
     }
 
-    public void setTargetaccount(String targetaccount) {
-        this.targetaccount = targetaccount;
+    public void setSourceAccount(Account sourceAccount) {
+        this.sourceAccount = sourceAccount;
     }
 
-    public Account getAccountAccountnumber() {
-        return accountAccountnumber;
+    public Account getTargetAccount() {
+        return targetAccount;
     }
 
-    public void setAccountAccountnumber(Account accountAccountnumber) {
-        this.accountAccountnumber = accountAccountnumber;
+    public void setTargetAccount(Account targetAccount) {
+        this.targetAccount = targetAccount;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (amount != null ? amount.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -105,7 +124,7 @@ public class Transfer implements Serializable {
             return false;
         }
         Transfer other = (Transfer) object;
-        if ((this.amount == null && other.amount != null) || (this.amount != null && !this.amount.equals(other.amount))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -113,7 +132,7 @@ public class Transfer implements Serializable {
 
     @Override
     public String toString() {
-        return "dk.cphbusiness.bank.control.Transfer[ amount=" + amount + " ]";
+        return "dk.cphbusiness.bank.model.Transfer[ id=" + id + " ]";
     }
-
+    
 }

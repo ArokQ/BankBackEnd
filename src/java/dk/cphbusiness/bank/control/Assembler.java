@@ -7,6 +7,7 @@ import dk.cphbusiness.bank.contract.dto.CustomerDetail;
 import dk.cphbusiness.bank.contract.dto.CustomerSummary;
 import dk.cphbusiness.bank.contract.dto.TransferSummary;
 import dk.cphbusiness.bank.model.Account;
+import dk.cphbusiness.bank.model.CheckingAccount;
 import dk.cphbusiness.bank.model.Person;
 import dk.cphbusiness.bank.model.Transfer;
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ import java.util.List;
 public class Assembler {
 
     public static CustomerSummary createCustomerSummary(Person customer) {
-        return new CustomerSummary(customer.getCpr(), customer.getFirstname()+" "+customer.getLastname(), customer.getStreet(), ""+customer.getPhone(), customer.getEmail());
+        return new CustomerSummary(customer.getCpr(), customer.getFirstName()+" "+customer.getLastName(), customer.getStreet(), ""+customer.getPhone(), customer.getEmail());
     }
 
     public static Collection<CustomerSummary> createCustomerSummaries(Collection<Person> customers) {
@@ -32,7 +33,7 @@ public class Assembler {
     }
 
     public static AccountSummary createAccountSummary(Account account) {
-        return new AccountSummary(account.getAccountnumber()+"", account.getAccounttype(), BigDecimal.valueOf(account.getBalance()));
+        return new AccountSummary(account.getNumber(), "Checking Account", new BigDecimal (100000));
     }
 
     
@@ -49,54 +50,40 @@ public class Assembler {
 
     
     public static TransferSummary createTransferSummary(Account account, Transfer transfer) {
-        if (transfer.getAccountAccountnumber() == account) {
-            return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()), transfer.getTargetaccount());
+        if (transfer.getSourceAccount() == account) {
+            return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()), transfer.getTargetAccount().getNumber());
         }
         else {
-            return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()), transfer.getAccountAccountnumber().toString());
+            return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()), transfer.getSourceAccount().getNumber());
         }
     }
     
     public static AccountDetail createAccountDetail(Account account) {
     List<Transfer> transfers = new ArrayList<>();
-    transfers.addAll(account.getTransferCollection());   
+    transfers.addAll(account.getOutgoingTransfers());   
     //Collections.sort(transfers);
-    System.err.println("Transfers for #"+account.getAccountnumber()+" "+transfers.size());
+    System.err.println("Transfers for #"+account.getNumber()+" "+transfers.size());
     Collection<TransferSummary> transferSummaries = new ArrayList<>();
     for (Transfer transfer : transfers) transferSummaries.add(createTransferSummary(account, transfer));
-    return new CheckingAccountDetail(account.getAccountnumber().toString(), BigDecimal.valueOf(account.getInterest()), transferSummaries);
+    return new CheckingAccountDetail(account.getNumber().toString(), BigDecimal.valueOf(account.getInterest()), transferSummaries);
     }
     
     public static CustomerDetail createCustomerDetail(Person customer) {
     return new CustomerDetail(
         customer.getCpr(),
         customer.getTitle(),
-        customer.getFirstname(),
-        customer.getLastname(),
+        customer.getFirstName(),
+        customer.getLastName(),
         customer.getStreet(),
-        customer.getPostalCode().getCode(),
-        customer.getPostalCode().getDistrict(),
+        customer.getPostal().getCode(),
+        customer.getPostal().getDistrict(),
         ""+customer.getPhone(),
         customer.getEmail()
         );
     }
     
-    public static Person createCustomerEntity(CustomerDetail detail) {
-    Person person = Person.find(detail.getCpr());
-    if (person == null) { 
-      return new Person(
-          detail.getCpr(),
-          detail.getTitle(),
-          detail.getFirstName(),
-          detail.getLastName(),
-          detail.getStreet(),
-          Integer.parseInt(detail.getPhone())
-          );
-      }
-    else {
-      
-      return person;
-      }
-    }
+ 
 
+   
+    
 }

@@ -1,94 +1,83 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package dk.cphbusiness.bank.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  *
- * @author Mads
+ * @author kenneth
  */
 @Entity
 @Table(name = "ACCOUNT")
+@Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries({
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")})
 public class Account implements Serializable {
-    
-    private static final Map<String, Account> items = new HashMap<>();
-    
-    
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
-    @Column(name = "ACCOUNTTYPE")
-    private String accounttype;
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ACCOUNTNUMBER")
-    private String accountnumber;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "BALANCE")
-    private double balance;
+    @Size(min = 1, max = 10)
+    @Column(name = "NUMBER")
+    private String number;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "INTEREST")
     private double interest;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountAccountnumber")
-    private Collection<Transfer> transferCollection;
-    @JoinColumn(name = "PERSON_CPR", referencedColumnName = "CPR")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sourceAccount")
+    private Collection<Transfer> outgoingTransfers;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "targetAccount")
+    private Collection<Transfer> incomingTransfers;
+    
+    @JoinColumn(name = "CUSTOMER_CPR", referencedColumnName = "CPR")
     @ManyToOne(optional = false)
-    private Person personCpr;
+    private Person customer;
 
     public Account() {
     }
-   
 
-    public Account(String accountnumber) {
-        this.accountnumber = accountnumber;
+    public Account(String number) {
+        this.number = number;
     }
 
-    public Account(String accountnumber, double balance, double interest) {
-        this.accountnumber = accountnumber;
-        this.balance = balance;
+    public Account(String number, double interest, Person customer) {
+        this.number = number;
         this.interest = interest;
-        items.put(this.accountnumber, this);
-    }
-    
-    public static Collection<Account> list(){
-    return items.values();
-}
-
-    public String getAccountnumber() {
-        return accountnumber;
+        this.customer = customer;
     }
 
-    public void setAccountnumber(String accountnumber) {
-        this.accountnumber = accountnumber;
+    public String getNumber() {
+        return number;
     }
 
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public double getInterest() {
@@ -99,26 +88,34 @@ public class Account implements Serializable {
         this.interest = interest;
     }
 
-    public Collection<Transfer> getTransferCollection() {
-        return transferCollection;
+    public Collection<Transfer> getOutgoingTransfers() {
+        return outgoingTransfers;
     }
 
-    public void setTransferCollection(Collection<Transfer> transferCollection) {
-        this.transferCollection = transferCollection;
+    public void setOutgoingTransfers(Collection<Transfer> outgoingTransfers) {
+        this.outgoingTransfers = outgoingTransfers;
     }
 
-    public Person getPersonCpr() {
-        return personCpr;
+    public Collection<Transfer> getIncomingTransfers() {
+        return incomingTransfers;
     }
 
-    public void setPersonCpr(Person personCpr) {
-        this.personCpr = personCpr;
+    public void setIncomingTransfers(Collection<Transfer> incomingTransfers) {
+        this.incomingTransfers = incomingTransfers;
+    }
+
+    public Person getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Person customer) {
+        this.customer = customer;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (accountnumber != null ? accountnumber.hashCode() : 0);
+        hash += (number != null ? number.hashCode() : 0);
         return hash;
     }
 
@@ -129,7 +126,7 @@ public class Account implements Serializable {
             return false;
         }
         Account other = (Account) object;
-        if ((this.accountnumber == null && other.accountnumber != null) || (this.accountnumber != null && !this.accountnumber.equals(other.accountnumber))) {
+        if ((this.number == null && other.number != null) || (this.number != null && !this.number.equals(other.number))) {
             return false;
         }
         return true;
@@ -137,15 +134,7 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "dk.cphbusiness.bank.control.Account[ accountnumber=" + accountnumber + " ]";
+        return "dk.cphbusiness.bank.model.Account[ number=" + number + " ]";
     }
-
-    public String getAccounttype() {
-        return accounttype;
-    }
-
-    public void setAccounttype(String accounttype) {
-        this.accounttype = accounttype;
-    }
-
+    
 }

@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package dk.cphbusiness.bank.model;
 
 import java.io.Serializable;
@@ -16,7 +22,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author Mads
+ * @author kenneth
  */
 @Entity
 @Table(name = "POSTAL")
@@ -35,7 +41,7 @@ public class Postal implements Serializable {
     @Size(min = 1, max = 80)
     @Column(name = "DISTRICT")
     private String district;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "postalCode")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "postal")
     private Collection<Person> personCollection;
 
     public Postal() {
@@ -96,7 +102,7 @@ public class Postal implements Serializable {
 
     @Override
     public String toString() {
-        return "dk.cphbusiness.bank.control.Postal[ code=" + code + " ]";
+        return "dk.cphbusiness.bank.model.Postal[ code=" + code + " ]";
     }
-
+    
 }
