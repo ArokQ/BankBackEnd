@@ -32,7 +32,7 @@ public class Assembler {
     }
 
     public static AccountSummary createAccountSummary(Account account) {
-        return new AccountSummary(account.getAccountnumber().toString(), account.getAccounttype(), BigDecimal.valueOf(account.getBalance()));
+        return new AccountSummary(account.getAccountnumber()+"", account.getAccounttype(), BigDecimal.valueOf(account.getBalance()));
     }
 
     

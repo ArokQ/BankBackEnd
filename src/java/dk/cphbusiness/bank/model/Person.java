@@ -1,6 +1,7 @@
 package dk.cphbusiness.bank.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class Person implements Serializable {
     @ManyToOne(optional = false)
     private Postal postalCode;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personCpr")
-    private Collection<Account> accountCollection;
+    private Collection<Account> accountCollection = new ArrayList<>();
 
     public Person() {
     }

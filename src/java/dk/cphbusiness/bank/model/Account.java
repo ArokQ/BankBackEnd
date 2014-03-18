@@ -41,7 +41,7 @@ public class Account implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ACCOUNTNUMBER")
-    private Integer accountnumber;
+    private String accountnumber;
     @Basic(optional = false)
     @NotNull
     @Column(name = "BALANCE")
@@ -60,25 +60,26 @@ public class Account implements Serializable {
     }
    
 
-    public Account(Integer accountnumber) {
+    public Account(String accountnumber) {
         this.accountnumber = accountnumber;
     }
 
-    public Account(Integer accountnumber, double balance, double interest) {
+    public Account(String accountnumber, double balance, double interest) {
         this.accountnumber = accountnumber;
         this.balance = balance;
         this.interest = interest;
+        items.put(this.accountnumber, this);
     }
     
     public static Collection<Account> list(){
     return items.values();
 }
 
-    public Integer getAccountnumber() {
+    public String getAccountnumber() {
         return accountnumber;
     }
 
-    public void setAccountnumber(Integer accountnumber) {
+    public void setAccountnumber(String accountnumber) {
         this.accountnumber = accountnumber;
     }
 
