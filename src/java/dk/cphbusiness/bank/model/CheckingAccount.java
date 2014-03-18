@@ -37,8 +37,8 @@ public class CheckingAccount extends Account {
         super(number);
     }
 
-    public CheckingAccount(String number, double interest, Person customer) {
-        super(number, interest, customer);
+    public CheckingAccount(double interest, Person customer) {
+        super(interest, customer);
     }
 
 

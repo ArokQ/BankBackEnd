@@ -90,7 +90,6 @@ public class BankManagerBean implements BankManager {
         if (detail instanceof CheckingAccountDetail) {
             CheckingAccountDetail checkingAccountDetail = (CheckingAccountDetail) detail;
             CheckingAccount checkingAccount = new CheckingAccount(
-                    checkingAccountDetail.getNumber(),
                     checkingAccountDetail.getInterest().doubleValue(),
                     customer
             );

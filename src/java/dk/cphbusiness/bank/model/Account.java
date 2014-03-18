@@ -12,6 +12,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -21,6 +23,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,6 +38,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")})
 public class Account implements Serializable {
+    private static long nextId = 1001;
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -66,8 +70,8 @@ public class Account implements Serializable {
         this.number = number;
     }
 
-    public Account(String number, double interest, Person customer) {
-        this.number = number;
+    public Account(double interest, Person customer) {
+        this.number = "1234-"+(nextId++);
         this.interest = interest;
         this.customer = customer;
     }
