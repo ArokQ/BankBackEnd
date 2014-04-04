@@ -75,8 +75,8 @@ public class Assembler {
         customer.getFirstName(),
         customer.getLastName(),
         customer.getStreet(),
-        customer.getPostal().getCode(),
-        customer.getPostal().getDistrict(),
+        "2800",//customer.getPostal().getCode(),
+        "Lyngby",//customer.getPostal().getDistrict(),
         ""+customer.getPhone(),
         customer.getEmail()
         );

@@ -2,15 +2,12 @@ drop table Checking_Account;
 drop table Transfer;
 drop table Account;
 drop table Person;
-drop table Postal;
-
-
+--drop table Postal;
 
 ---------------
-create table Postal(
-code varchar(8) primary key,
-district varchar(80) not null);
-
+--create table Postal(
+--code varchar(8) primary key,
+--district varchar(80) not null);
 
 create table Person(
 cpr varchar(12) primary key,
@@ -45,5 +42,7 @@ target_number varchar(10) not null references Account(number)
 create table Checking_Account (
     number varchar(10) primary key references Account(number)
 );
+
+ALTER TABLE person ADD UNIQUE (email);
 
 ------------------

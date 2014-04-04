@@ -17,6 +17,7 @@ import static dk.cphbusiness.bank.control.Assembler.*;
 import dk.cphbusiness.bank.model.Account;
 import dk.cphbusiness.bank.model.CheckingAccount;
 import dk.cphbusiness.bank.model.Person;
+import dk.cphbusiness.bank.model.Postal;
 import java.math.BigDecimal;
 import java.util.Collection;
 import javax.ejb.Stateless;
@@ -32,8 +33,7 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public String sayHello(String name) {
-        //Person person = new Person("010101-1001", "Awesome", "Niels", "Boer", "Vej 4", 24242525);
-        return " Hello " + name + " from bank manager bean ";//+person.getCpr();
+            return " Hello " + name + " from bank manager bean ";//+person.getCpr();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BankManagerBean implements BankManager {
         Collection<Person> customer = query.getResultList();
         return createCustomerSummaries(customer);
     }
-
+    
     @Override
     public Collection<AccountSummary> listAccounts() {
         Query query = em.createNamedQuery("Account.findAll");
@@ -56,6 +56,7 @@ public class BankManagerBean implements BankManager {
         if (customer == null) {
             return createAccountSummaries(null);
         }
+        em.refresh(customer);
         return createAccountSummaries(customer.getOwnedAccounts());
     }
 
@@ -76,7 +77,13 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public CustomerDetail saveCustomer(CustomerDetail customer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Person person = new Person(customer.getCpr(), customer.getTitle(), customer.getFirstName(), customer.getLastName(), customer.getStreet(), Integer.parseInt(customer.getPhone()));
+        person.setPostal(new Postal(customer.getPostalCode(), customer.getPostalDistrict()));
+        person.setEmail(customer.getEmail());
+        person.setPassword("bla");
+     
+        em.persist(person);
+        return createCustomerDetail(person);
     }
 
     @Override
@@ -93,6 +100,7 @@ public class BankManagerBean implements BankManager {
                     checkingAccountDetail.getInterest().doubleValue(),
                     customer
             );
+
             em.persist(checkingAccount);
             return createAccountDetail(checkingAccount);
         } else {
@@ -102,7 +110,7 @@ public class BankManagerBean implements BankManager {
     }
 
     public Person createCustomerEntity(CustomerDetail detail) {
-        Person customer = em.find(Person.class, Integer.parseInt(detail.getCpr()));
+        Person customer = em.find(Person.class, detail.getCpr());
         if (customer == null) {
             return new Person(
                     detail.getCpr(),
@@ -114,7 +122,21 @@ public class BankManagerBean implements BankManager {
             );
         } else {
 
+            em.persist(customer);
             return customer;
+        }
+    }
+
+    @Override
+    public boolean checkEmail(String email) {
+        
+        Query query = em.createNamedQuery("Person.findEmail").setParameter("email", email);
+        
+        try{
+            query.getSingleResult();
+            return false;
+        } catch(Exception e){
+            return true;
         }
     }
 
