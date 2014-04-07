@@ -51,7 +51,7 @@ public class Assembler {
     
     public static TransferSummary createTransferSummary(Account account, Transfer transfer) {
         if (transfer.getSourceAccount() == account) {
-            return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()), transfer.getTargetAccount().getNumber());
+            return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()).negate(), transfer.getTargetAccount().getNumber());
         }
         else {
             return new TransferSummary(transfer.getTransferdate(), BigDecimal.valueOf(transfer.getAmount()), transfer.getSourceAccount().getNumber());
@@ -60,6 +60,7 @@ public class Assembler {
     
     public static AccountDetail createAccountDetail(Account account) {
     List<Transfer> transfers = new ArrayList<>();
+    transfers.addAll(account.getIncomingTransfers());
     transfers.addAll(account.getOutgoingTransfers());   
     //Collections.sort(transfers);
     System.err.println("Transfers for #"+account.getNumber()+" "+transfers.size());

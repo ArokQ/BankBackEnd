@@ -18,8 +18,11 @@ import dk.cphbusiness.bank.model.Account;
 import dk.cphbusiness.bank.model.CheckingAccount;
 import dk.cphbusiness.bank.model.Person;
 import dk.cphbusiness.bank.model.Postal;
+import dk.cphbusiness.bank.model.Transfer;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,7 +36,7 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public String sayHello(String name) {
-            return " Hello " + name + " from bank manager bean ";//+person.getCpr();
+        return " Hello " + name + " from bank manager bean ";//+person.getCpr();
     }
 
     @Override
@@ -42,7 +45,7 @@ public class BankManagerBean implements BankManager {
         Collection<Person> customer = query.getResultList();
         return createCustomerSummaries(customer);
     }
-    
+
     @Override
     public Collection<AccountSummary> listAccounts() {
         Query query = em.createNamedQuery("Account.findAll");
@@ -62,17 +65,29 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public Collection<String> listAccountTypes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Collection<String> accountTypes = new ArrayList<>();
+        accountTypes.add("Checking Account");
+        accountTypes.add("Money Market Account");
+        accountTypes.add("Time Deposit Account");
+        return accountTypes;
+        //----------------------------------------------------------------------
     }
 
     @Override
     public AccountDetail transferAmount(BigDecimal amount, AccountIdentifier source, AccountIdentifier target) throws NoSuchAccountException, TransferNotAcceptedException, InsufficientFundsException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Account sourceAccount = em.find(Account.class, source.getNumber());
+        Account targetAccount = em.find(Account.class, target.getNumber());
+        Transfer trans = new Transfer((int) (Math.random()*100000000), amount.doubleValue(), new Date(), sourceAccount, targetAccount);
+        em.persist(trans);
+        return createAccountDetail(sourceAccount);
+        //----------------------------------------------------------------------
     }
 
     @Override
     public AccountDetail showAccountHistory(AccountIdentifier account) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Account ac = em.find(Account.class, account.getNumber());
+        return createAccountDetail(ac);
+        //--------------------------------------------------------------------------------------------------------
     }
 
     @Override
@@ -81,19 +96,26 @@ public class BankManagerBean implements BankManager {
         person.setPostal(new Postal(customer.getPostalCode(), customer.getPostalDistrict()));
         person.setEmail(customer.getEmail());
         person.setPassword("bla");
-     
+
         em.persist(person);
         return createCustomerDetail(person);
     }
 
     @Override
     public CustomerDetail showCustomer(CustomerIdentifier customer) throws NoSuchCustomerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Person person = em.find(Person.class, customer.getCpr());
+        if (person == null) {
+            throw new NoSuchCustomerException(customer);
+        }
+        return createCustomerDetail(person);
+        //----------------------------------------------------------------------------------------------------
     }
 
     @Override
     public AccountDetail createAccount(CustomerIdentifier customerId, AccountDetail detail) throws NoSuchCustomerException, CustomerBannedException {
+
         Person customer = em.find(Person.class, customerId.getCpr());
+
         if (detail instanceof CheckingAccountDetail) {
             CheckingAccountDetail checkingAccountDetail = (CheckingAccountDetail) detail;
             CheckingAccount checkingAccount = new CheckingAccount(
@@ -129,13 +151,13 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public boolean checkEmail(String email) {
-        
+
         Query query = em.createNamedQuery("Person.findEmail").setParameter("email", email);
-        
-        try{
+
+        try {
             query.getSingleResult();
             return false;
-        } catch(Exception e){
+        } catch (Exception e) {
             return true;
         }
     }

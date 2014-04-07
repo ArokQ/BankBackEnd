@@ -64,10 +64,14 @@ public class Transfer implements Serializable {
         this.id = id;
     }
 
-    public Transfer(Integer id, double amount, Date transferdate) {
+    public Transfer(Integer id, double amount, Date transferdate, Account source, Account target) {
         this.id = id;
         this.amount = amount;
         this.transferdate = transferdate;
+        this.sourceAccount = source;
+        source.getOutgoingTransfers().add(this);
+        this.targetAccount = target;
+        target.getIncomingTransfers().add(this);
     }
 
     public Integer getId() {
