@@ -1,24 +1,10 @@
 package dk.cphbusiness.bank.control;
 
 import dk.cphbusiness.bank.contract.BankManager;
-import dk.cphbusiness.bank.contract.dto.AccountDetail;
-import dk.cphbusiness.bank.contract.dto.AccountIdentifier;
-import dk.cphbusiness.bank.contract.dto.AccountSummary;
-import dk.cphbusiness.bank.contract.dto.CheckingAccountDetail;
-import dk.cphbusiness.bank.contract.dto.CustomerDetail;
-import dk.cphbusiness.bank.contract.dto.CustomerIdentifier;
-import dk.cphbusiness.bank.contract.dto.CustomerSummary;
-import dk.cphbusiness.bank.contract.eto.CustomerBannedException;
-import dk.cphbusiness.bank.contract.eto.InsufficientFundsException;
-import dk.cphbusiness.bank.contract.eto.NoSuchAccountException;
-import dk.cphbusiness.bank.contract.eto.NoSuchCustomerException;
-import dk.cphbusiness.bank.contract.eto.TransferNotAcceptedException;
+import dk.cphbusiness.bank.contract.dto.*;
+import dk.cphbusiness.bank.contract.eto.*;
 import static dk.cphbusiness.bank.control.Assembler.*;
-import dk.cphbusiness.bank.model.Account;
-import dk.cphbusiness.bank.model.CheckingAccount;
-import dk.cphbusiness.bank.model.Person;
-import dk.cphbusiness.bank.model.Postal;
-import dk.cphbusiness.bank.model.Transfer;
+import dk.cphbusiness.bank.model.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,6 +31,14 @@ public class BankManagerBean implements BankManager {
         Collection<Person> customer = query.getResultList();
         return createCustomerSummaries(customer);
     }
+    
+    @Override
+    public int getCustomerCount() {
+        Query query = em.createNamedQuery("Person.findAll");
+        Collection<Person> customer = query.getResultList();
+        return customer.size();
+    }
+
 
     @Override
     public Collection<AccountSummary> listAccounts() {
@@ -87,7 +81,6 @@ public class BankManagerBean implements BankManager {
     public AccountDetail showAccountHistory(AccountIdentifier account) {
         Account ac = em.find(Account.class, account.getNumber());
         return createAccountDetail(ac);
-        //--------------------------------------------------------------------------------------------------------
     }
 
     @Override
@@ -97,7 +90,7 @@ public class BankManagerBean implements BankManager {
         person.setEmail(customer.getEmail());
         person.setPassword("bla");
 
-        em.persist(person);
+        em.merge(person);
         return createCustomerDetail(person);
     }
 
@@ -108,7 +101,6 @@ public class BankManagerBean implements BankManager {
             throw new NoSuchCustomerException(customer);
         }
         return createCustomerDetail(person);
-        //----------------------------------------------------------------------------------------------------
     }
 
     @Override
