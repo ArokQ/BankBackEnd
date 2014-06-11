@@ -33,7 +33,7 @@ public class Assembler {
     }
 
     public static AccountSummary createAccountSummary(Account account) {
-        return new AccountSummary(account.getNumber(), "Checking Account", new BigDecimal (100000));
+        return new AccountSummary(account.getNumber(), account.getDtype(), new BigDecimal (100000));
     }
 
     

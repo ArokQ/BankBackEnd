@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+
 @Stateless
 public class BankManagerBean implements BankManager {
 
@@ -22,7 +23,7 @@ public class BankManagerBean implements BankManager {
 
     @Override
     public String sayHello(String name) {
-        return " Hello " + name + " from bank manager bean ";//+person.getCpr();
+    return " Hello " + name + " from bank manager bean ";//+person.getCpr();
     }
 
     @Override
@@ -61,6 +62,7 @@ public class BankManagerBean implements BankManager {
     public Collection<String> listAccountTypes() {
         Collection<String> accountTypes = new ArrayList<>();
         accountTypes.add("Checking Account");
+        accountTypes.add("Realestate Account");
         accountTypes.add("Money Market Account");
         accountTypes.add("Time Deposit Account");
         return accountTypes;
@@ -117,7 +119,16 @@ public class BankManagerBean implements BankManager {
 
             em.persist(checkingAccount);
             return createAccountDetail(checkingAccount);
-        } else {
+        } else if (detail instanceof RealestateAccountDetail){
+            RealestateAccountDetail realestateAccountDetail = (RealestateAccountDetail) detail;
+            
+            RealestateAccount realestateAccount = new RealestateAccount(null, 0, 0, null);
+                    
+
+            em.persist(realestateAccount);
+            return createAccountDetail(realestateAccount);
+        } 
+        else {
             throw new RuntimeException("Unknown Account Type");
         }
 

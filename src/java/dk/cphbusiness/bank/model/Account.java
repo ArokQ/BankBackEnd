@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -34,6 +35,13 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")})
 public class Account implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 30)
+    @Column(name = "DTYPE")
+    private String dtype;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
+    private RealestateAccount realestateAccount;
     private static long nextId = 1001;
     
     private static final long serialVersionUID = 1L;
@@ -136,6 +144,22 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "dk.cphbusiness.bank.model.Account[ number=" + number + " ]";
+    }
+
+    public String getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
+    }
+
+    public RealestateAccount getRealestateAccount() {
+        return realestateAccount;
+    }
+
+    public void setRealestateAccount(RealestateAccount realestateAccount) {
+        this.realestateAccount = realestateAccount;
     }
     
 }

@@ -1,7 +1,9 @@
 drop table Checking_Account;
+drop table Realestate_Account;
 drop table Transfer;
 drop table Account;
 drop table Person;
+
 --drop table Postal;
 
 ---------------
@@ -41,6 +43,13 @@ target_number varchar(10) not null references Account(number)
 
 create table Checking_Account (
     number varchar(10) primary key references Account(number)
+);
+
+create table Realestate_Account (
+    number varchar(10) primary key references Account(number),
+    CYS int not null,
+    VP int not null,
+    EXDATE date not null
 );
 
 ALTER TABLE person ADD UNIQUE (email);
